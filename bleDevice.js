@@ -38,13 +38,18 @@ class BleDevice {
     });
   }
 
-  sendMessage(msg) {
+  sendMessage(msg, fun) {
     let test = `01100110011001100011010000110101`;
     //const toSend = test
-    const toSend = this.currentId + '*' + msg;
+    const msgId = this.currentId
+    const toSend = msgId + '*' + msg;
     console.log(`sending message in broadcast: size = ${toSend.length} ${toSend}`);
     this.port.write(`chat msg "${toSend}"\n`);
     this.generateNextId();
+    fun(`snd`);
+
+   
+    
   }
   onReceiveMessage(fun) {
     this.parser.on("data", async (data) => { // "<0x0033> -57: 1*hey b*pl"
