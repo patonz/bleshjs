@@ -9,6 +9,7 @@ class BleDevice {
   portName = undefined;
   parser = undefined;
   port = undefined;
+  address = undefined;
 
   constructor() {
     
@@ -36,6 +37,18 @@ class BleDevice {
     this.port.on("readable", () => {
       this.port.read();
     });
+
+    this.requestAddress()
+  }
+
+  /**
+   * Specific serial message in order to receive a message with the local address on the mesh
+   */
+  requestAddress(){
+    this.port.write(`chat status\n`)
+    setTimeout(()=>{
+      this.port.write(`chat status\n`)
+    }, 200)
   }
 
   sendMessage(msg, fun) {
@@ -46,14 +59,20 @@ class BleDevice {
     console.log(`sending message in broadcast: size = ${toSend.length} ${toSend}`);
     this.port.write(`chat msg "${toSend}"\n`);
     this.generateNextId();
-    fun(`snd`);
+    fun(`snd ${msgId} ${this.address} ${toSend.length} ${DateTime.now().toMillis()}`);
 
-   
-    
   }
   onReceiveMessage(fun) {
     this.parser.on("data", async (data) => { // "<0x0033> -57: 1*hey b*pl"
       
+     
+
+      if(data.includes("addr")){
+        this.address = data.split("addr ")[1]
+        console.log(`Found local mesh address: ${this.address}`);
+        return
+      }
+
       if(!data.includes("rcv")){
         return
       }
