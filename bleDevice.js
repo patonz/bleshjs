@@ -64,7 +64,7 @@ class BleDevice {
   }
   onReceiveMessage(fun) {
     this.parser.on("data", async (data) => { // "<0x0033> -57: 1*hey b*pl"
-      
+      console.log(data);
      
 
       if(data.includes("addr")){

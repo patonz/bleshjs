@@ -1,7 +1,7 @@
 const BleDevice = require('./bleDevice')
 
 
-BleDevice.connect('/dev/ttyACM0');
+BleDevice.connect('/dev/ttyUSB0');
 
 
 BleDevice.onReceiveMessage((payload, info)=>{
