@@ -114,17 +114,19 @@ class BleDevice {
         let id = header.split(":")[1].substring(1)
         let address = header.split(":")[0].split(" ")[0]
         let rssi = header.split(":")[0].split(" ")[1]
+        let timestamp = DateTime.now().toMillis()
 
         let messageInfo = {
           header : splittedDataArray[0],
           id: header.split(":")[1].substring(1),
           sender: header.split(":")[0].split(" ")[0],
-          rssi: header.split(":")[0].split(" ")[1]
+          rssi: header.split(":")[0].split(" ")[1],
+          timestamp: timestamp
         }
         let payload = data.substring(header.length + 1);
 
         /* type:rcv/snd id mac_address rssi len_data timestamp*/
-        let to_string = `rcv ${id} ${address} ${rssi} ${data.length} ${DateTime.now().toMillis()}`
+        let to_string = `rcv ${id} ${address} ${rssi} ${data.length} ${timestamp}`
         fun(data.substring(header.length + 1), messageInfo, to_string);
       } // +1 for removing the '*' separator char from the message
     });
